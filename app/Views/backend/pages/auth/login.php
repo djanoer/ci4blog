@@ -39,6 +39,7 @@
       <input type="password" class="form-control form-control-lg" placeholder="**********" name="password" value="<?= set_value('password') ?>">
       <div class="input-group-append custom">
         <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
+    </span>
       </div>
     </div>
     <?php if($validation->getError('password')) : ?>
