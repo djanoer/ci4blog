@@ -67,3 +67,12 @@
 #--------------------------------------------------------------------
 
 # logger.threshold = 4
+
+
+EMAIL_HOST          = 'sandbox.smtp.mailtrap.io'
+EMAIL_USERNAME      = 'd5bd7a0cb98660'
+EMAIL_PASSWORD      = '********b9ec'
+EMAIL_ENCRYPTION    = 'TLS'
+EMAIL_PORT          = 587
+EMAIL_FROM_ADDRESS  = 'djanur405@gmail.com'
+WMil_from_name      = 'CI4Blog'
