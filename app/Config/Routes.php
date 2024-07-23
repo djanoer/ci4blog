@@ -15,6 +15,7 @@ $routes->group('admin', static function ($routes) {
     $routes->get('logout', 'AdminController::logoutHandler', ['as' => 'admin.logout']);
     $routes->get('profile', 'AdminController::profile', ['as' => 'admin.profile']);
     $routes->get('categories', 'AdminController::categories', ['as' => 'categories']);
+    $routes->post('add-category', 'AdminController::addCategory', ['as' => 'add-category']);
   });
 
   $routes->group('', ['filter' => 'cifilter:guest'], static function ($routes) {
