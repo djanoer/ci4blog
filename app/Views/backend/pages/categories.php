@@ -37,13 +37,14 @@
         </div>
       </div>
       <div class="card-body">
-        <table class="table table-sm table-borderless table-hover table-striped">
+        <table class="table table-sm table-borderless table-hover table-striped" id="categories-table">
           <thead>
             <tr>
-              <td scope="col">#</td>
-              <td scope="col">Categories name</td>
-              <td scope="col">N. of sub categories</td>
-              <td scope="col">Action</td>
+              <th scope="col">#</th>
+              <th scope="col">Categories name</th>
+              <th scope="col">N. of sub categories</th>
+              <th scope="col">Action</th>
+              <th scope="col">Ordering</th>
             </tr>
           </thead>
           <tbody>
@@ -100,11 +101,18 @@
 </div>
 
 <?php include('modals/category-modal-form.php'); ?>
-
 <?= $this->endSection(); ?>
 
-<?= $this->section('scripts'); ?>
+<?= $this->section('stylecheets') ?>
+<link rel="stylesheet" href="/backend/src/plugins/datatables/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="/backend/src/plugins/datatables/css/responsive.bootstrap4.min.css">
+<?= $this->endSection() ?>
 
+<?= $this->section('scripts'); ?>
+<script src="/backend/src/plugins/datatables/js/jquery.dataTables.min.js"></script>
+<script src="/backend/src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
+<script src="/backend/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
+<script src="/backend/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
 <script>
   $(document).on('click', '#add_category_btn', function(e) {
     e.preventDefault();
@@ -161,6 +169,7 @@
     });
 });
 </script>
+<?= $this->endSection(); ?>
 
 <!-- <script>
   $(document).on('click', '#add_category_btn', function(e) {
@@ -218,4 +227,3 @@
     });
   });
 </script> -->
-<?= $this->endSection(); ?>
