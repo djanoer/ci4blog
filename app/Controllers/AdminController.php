@@ -62,7 +62,15 @@ class AdminController extends BaseController
                 $errors = $validation->getErrors();
                 return $this->response->setJSON(['status' => 0, 'token' => csrf_hash(), 'error' => $errors]);
             } else {
-                return $this->response->setJSON(['status' => 1, 'token' => csrf_hash(), 'Validated..']);
+                // return $this->response->setJSON(['status' => 1, 'token' => csrf_hash(), 'msg'=>'Data saved successfully']);
+                $category = new Category();
+                $save = $category->save(['name'=>$request->getVar('category_name')]);
+
+                if($save){
+                    return $this->response->setJSON(['status'=>1, 'token'=>csrf_hash(),'msg'=>'Data saved successfully']);
+                }else{
+                    return $this->response->setJSON(['status'=>0, 'token'=>csrf_hash(),'msg'=>'Something went wrong.']);
+                }
             }
         }
     }

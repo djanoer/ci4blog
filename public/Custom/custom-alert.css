@@ -1,0 +1,22 @@
+.custom-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-width: 300px;
+    padding: 15px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+.custom-alert.success {
+    background-color: #28a745;
+}
+.custom-alert.error {
+    background-color: #dc3545;
+}
+.custom-alert.show {
+    opacity: 1;
+}

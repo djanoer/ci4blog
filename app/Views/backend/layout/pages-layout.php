@@ -43,6 +43,7 @@
 			href="/backend/vendors/styles/icon-font.min.css"
 		/>
 		<link rel="stylesheet" type="text/css" href="/backend/vendors/styles/style.css" />
+		<link rel="stylesheet" href="/Custom/custom-alert.css" />
     <?= $this->renderSection('stylesheets') ?>
 	</head>
 	<body>
@@ -72,6 +73,7 @@
 		<script src="/backend/vendors/scripts/script.min.js"></script>
 		<script src="/backend/vendors/scripts/process.js"></script>
 		<script src="/backend/vendors/scripts/layout-settings.js"></script>
+		<script src="/Custom/custom-alert.js"></script>
     <?php $this->renderSection('scripts'); ?>
 	</body>
 </html>
