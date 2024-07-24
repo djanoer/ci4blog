@@ -47,14 +47,7 @@
               <th scope="col">Ordering</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td scope="row">1</td>
-              <td>---</td>
-              <td>---</td>
-              <td>---</td>
-            </tr>
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
     </div>
@@ -154,6 +147,7 @@
                     $(form)[0].reset();
                     modal.modal('hide');
                     showCustomAlert(response.msg, 'success');
+                    categories_DT.ajax.reload(null, false); //update datatable
                 } else {
                     showCustomAlert(response.msg, 'error');
                 }
@@ -167,6 +161,23 @@
             showCustomAlert("An error occurred: " + error, 'error');
         }
     });
+});
+
+//Retrive categories
+var categories_DT = $('#categories-table').DataTable({
+  processing:true,
+  serverSide:true,
+  ajax:"<?= route_to('get-categories') ?>",
+  dom:"Brtip",
+  info:true,
+  fnCreatedRow:function(row, data, index){
+    $('td', row).eq(0).html(index+1);
+  },
+  columnDefs:[
+    {orderable:false, targets:[0,1,2,3]},
+    {visible:false, targets:4}
+  ],
+  order:[[4,'asc']]
 });
 </script>
 <?= $this->endSection(); ?>
