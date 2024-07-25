@@ -107,28 +107,61 @@
 <script src="/backend/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
 <script src="/backend/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
 <script>
-  $(document).on('click', '#add_category_btn', function(e) {
-    e.preventDefault();
-    var modal = $('body').find('div#category-modal');
-    var modal_title = 'Add category';
-    var modal_btn_text = 'ADD';
-    modal.find('.modal-title').html(modal_title);
-    modal.find('.modal-footer > button.action').html(modal_btn_text);
-    modal.find('input.error-text').html('');
-    modal.find('input[type="text"]').val('');
-    modal.modal('show');
-  });
+  $(document).ready(function() {
+    // Definisikan categories_DT di scope yang dapat diakses oleh semua fungsi
+    var categories_DT;
 
-  $('#add_category_form').on('submit', function(e) {
-    e.preventDefault();
-    var csrfName = $('.ci_csrf_data').attr('name');
-    var csrfHash = $('.ci_csrf_data').val();
-    var form = this;
-    var modal = $('body').find('div#category-modal');
-    var formdata = new FormData(form);
-    formdata.append(csrfName, csrfHash);
+    // Inisialisasi DataTable
+    categories_DT = $('#categories-table').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: "<?= route_to('get-categories') ?>",
+      dom: "Brtip",
+      info: true,
+      columnDefs: [{
+          orderable: false,
+          targets: [0, 1, 2, 3]
+        },
+        {
+          visible: false,
+          targets: 4
+        }
+      ],
+      order: [
+        [4, 'asc']
+      ],
+      drawCallback: function(settings) {
+        // Update nomor urut setiap kali tabel di-redraw
+        this.api().column(0).nodes().each(function(cell, i) {
+          cell.innerHTML = i + 1;
+        });
+      }
+    });
 
-    $.ajax({
+    // Event listener untuk tombol add category
+    $(document).on('click', '#add_category_btn', function(e) {
+      e.preventDefault();
+      var modal = $('body').find('div#category-modal');
+      var modal_title = 'Add category';
+      var modal_btn_text = 'ADD';
+      modal.find('.modal-title').html(modal_title);
+      modal.find('.modal-footer > button.action').html(modal_btn_text);
+      modal.find('span.error-text').html('');
+      modal.find('input[type="text"]').val('');
+      modal.modal('show');
+    });
+
+    // Event listener untuk submit form
+    $('#add_category_form').on('submit', function(e) {
+      e.preventDefault();
+      var csrfName = $('.ci_csrf_data').attr('name');
+      var csrfHash = $('.ci_csrf_data').val();
+      var form = this;
+      var modal = $('body').find('div#category-modal');
+      var formdata = new FormData(form);
+      formdata.append(csrfName, csrfHash);
+
+      $.ajax({
         url: $(form).attr('action'),
         method: $(form).attr('method'),
         data: formdata,
@@ -137,48 +170,33 @@
         contentType: false,
         cache: false,
         beforeSend: function() {
-            $(form).find('span.error-text').text('');
+          $(form).find('span.error-text').text('');
         },
         success: function(response) {
-            $('.ci_csrf_data').val(response.token);
+          $('.ci_csrf_data').val(response.token);
 
-            if ($.isEmptyObject(response.error)) {
-                if (response.status == 1) {
-                    $(form)[0].reset();
-                    modal.modal('hide');
-                    showCustomAlert(response.msg, 'success');
-                    categories_DT.ajax.reload(null, false); //update datatable
-                } else {
-                    showCustomAlert(response.msg, 'error');
-                }
+          if ($.isEmptyObject(response.error)) {
+            if (response.status == 1) {
+              $(form)[0].reset();
+              modal.modal('hide');
+              showCustomAlert(response.msg, 'success');
+              categories_DT.ajax.reload(null, false);
             } else {
-                $.each(response.error, function(prefix, val) {
-                    $(form).find('span.' + prefix + '_error').text(val);
-                });
+              showCustomAlert(response.msg, 'error');
             }
+          } else {
+            $.each(response.error, function(prefix, val) {
+              $(form).find('span.' + prefix + '_error').text(val);
+            });
+          }
         },
         error: function(xhr, status, error) {
-            showCustomAlert("An error occurred: " + error, 'error');
+          console.error("Ajax error:", status, error);
+          showCustomAlert("An error occurred: " + error, 'error');
         }
+      });
     });
-});
-
-//Retrive categories
-var categories_DT = $('#categories-table').DataTable({
-  processing:true,
-  serverSide:true,
-  ajax:"<?= route_to('get-categories') ?>",
-  dom:"Brtip",
-  info:true,
-  fnCreatedRow:function(row, data, index){
-    $('td', row).eq(0).html(index+1);
-  },
-  columnDefs:[
-    {orderable:false, targets:[0,1,2,3]},
-    {visible:false, targets:4}
-  ],
-  order:[[4,'asc']]
-});
+  });
 </script>
 <?= $this->endSection(); ?>
 
