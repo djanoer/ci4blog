@@ -92,8 +92,10 @@
     </div>
   </div>
 </div>
-
+`
 <?php include('modals/category-modal-form.php'); ?>
+<?php include('modals/edit-category-modal-form.php'); ?>
+
 <?= $this->endSection(); ?>
 
 <?= $this->section('stylecheets') ?>
@@ -154,10 +156,40 @@
     // Event listener untuk submit form
     $('#add_category_form').on('submit', function(e) {
       e.preventDefault();
+      handleFormSubmit(this, 'div#category-modal');
+    });
+
+    // Event listener untuk tombol edit category
+    $(document).on('click', '.editCategoryBtn', function(e) {
+      e.preventDefault();
+      var category_id = $(this).data('id');
+      var url = "<?= route_to('get-category') ?>";
+      $.get(url, {
+        category_id: category_id
+      }, function(response) {
+        var modal_title = 'Edit category';
+        var modal_btn_text = 'Save changes';
+        var modal = $('body').find('div#edit-category-modal');
+        modal.find('form').find('input[type="hidden"][name="category_id"]').val(category_id);
+        modal.find('.modal-title').html(modal_title);
+        modal.find('.modal-footer > button.action').html(modal_btn_text);
+        modal.find('input[type="text"]').val(response.data.name);
+        modal.find('span.error-text').html('');
+        modal.modal('show');
+      }, 'json');
+    });
+
+    // Event listener untuk submit form update
+    $('#update_category_form').on('submit', function(e) {
+      e.preventDefault();
+      handleFormSubmit(this, 'div#edit-category-modal');
+    });
+
+    // Fungsi untuk menangani submit form
+    function handleFormSubmit(form, modalSelector) {
       var csrfName = $('.ci_csrf_data').attr('name');
       var csrfHash = $('.ci_csrf_data').val();
-      var form = this;
-      var modal = $('body').find('div#category-modal');
+      var modal = $('body').find(modalSelector);
       var formdata = new FormData(form);
       formdata.append(csrfName, csrfHash);
 
@@ -177,10 +209,14 @@
 
           if ($.isEmptyObject(response.error)) {
             if (response.status == 1) {
-              $(form)[0].reset();
+              form.reset();
               modal.modal('hide');
               showCustomAlert(response.msg, 'success');
-              categories_DT.ajax.reload(null, false);
+              if (categories_DT) {
+                categories_DT.ajax.reload(null, false);
+              } else {
+                console.error("categories_DT is not defined");
+              }
             } else {
               showCustomAlert(response.msg, 'error');
             }
@@ -195,7 +231,7 @@
           showCustomAlert("An error occurred: " + error, 'error');
         }
       });
-    });
+    }
   });
 </script>
 <?= $this->endSection(); ?>
