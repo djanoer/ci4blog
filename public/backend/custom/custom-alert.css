@@ -1,0 +1,55 @@
+.custom-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-width: 300px;
+    padding: 15px;
+    border-radius: 4px;
+    color: white;
+    font-weight: 500; /* Sedikit lebih berat dari normal untuk penekanan */
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out, scale 0.5s ease-in-out;
+    font-size: 12px; /* Ukuran font lebih kecil */
+    font-family: 'Roboto', sans-serif; /* Font Roboto */
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bayangan lembut */
+}
+
+.custom-alert.success {
+    background-color: rgba(40, 167, 69, 0.8); /* Hijau dengan 80% transparansi */
+}
+
+.custom-alert.error {
+    background-color: rgba(220, 53, 69, 0.8); /* Merah dengan 80% transparansi */
+}
+
+.custom-alert.show {
+    opacity: 1;
+    transform: scale(1); /* Skala normal saat ditampilkan */
+}
+
+.custom-alert.hide {
+    opacity: 0;
+    transform: scale(0.9) translateX(100%); /* Skala kecil dan geser keluar saat disembunyikan */
+}
+
+.custom-alert .icon {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.custom-alert .message {
+    flex: 1;
+}
+
+.custom-alert .close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 15px;
+    line-height: 1;
+}
