@@ -195,4 +195,44 @@ class AdminController extends BaseController
             }
         }
     }
+
+    public function reorderCategories() {
+        $request = \Config\Services::request();
+
+        if($request->isAJAX()) {
+            $positions = $request->getVar('positions');
+            $category = new Category();
+
+            foreach($positions as $position){
+                $index = $position[0];
+                $newPosition = $position[1];
+                $category->where('id',$index)->set(['ordering'=>$newPosition])->update();
+            }
+            return $this->response->setJSON(['status'=>1,'msg'=>'Category ordering has been successfully updated.']);
+        }
+
+    }
+
+    public function getParentCategories(){
+        $request = \Config\Services::request();
+
+        if($request->isAJAX()) {
+            $id = $request->getVar('parent_category_id');
+            $options = '<option value="0">Uncategorized</option>';
+            $category = new Category();
+            $parent_categories = $category->findAll();
+
+            if(count($parent_categories)) {
+                $added_options = '';
+                foreach($parent_categories as $parent_category){
+                    $isSelected = $parent_category['id'] == $id ? 'selected' : '';
+                    $added_options.='<option value="'.$parent_category['id'].'" '.$isSelected.'>'.$parent_category['name'].'</option>';
+                }
+                $options = $options.$added_options;
+                return $this->response->setJSON(['status'=>1,'data'=>$options]);
+            }else{
+                return $this->response->setJSON(['status'=>1,'data'=>$options]);
+            }
+        }  
+    }
 }

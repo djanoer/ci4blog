@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2662d539b13442e077725162bd282c1e",
+    "content-hash": "16377eb93b2fede5934298e168bcef3c",
     "packages": [
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -210,6 +210,59 @@
                 }
             ],
             "time": "2023-10-10T08:35:13+00:00"
+        },
+        {
+            "name": "mberecall/ci4-slugify",
+            "version": "v2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mberecall/ci4-slugify.git",
+                "reference": "fd6c1e1367478dc6fcebbb8dbab23a30dac68651"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mberecall/ci4-slugify/zipball/fd6c1e1367478dc6fcebbb8dbab23a30dac68651",
+                "reference": "fd6c1e1367478dc6fcebbb8dbab23a30dac68651",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/lib/SlugService.php"
+                ],
+                "psr-4": {
+                    "Mberecall\\CodeIgniter\\Library\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "MB'DUSENGE Callixte (mberecall)",
+                    "homepage": "https://github.com/mberecall"
+                }
+            ],
+            "description": "Simple Slugify Library for Codeigniter",
+            "homepage": "https://github.com/mberecall/ci4-slugify",
+            "keywords": [
+                "ci4 slugify",
+                "codeigniter",
+                "codeigniter slug",
+                "codeigniter4",
+                "slug",
+                "sluggable",
+                "slugify"
+            ],
+            "support": {
+                "issues": "https://github.com/mberecall/ci4-slugify/issues",
+                "source": "https://github.com/mberecall/ci4-slugify/tree/v2.0.2"
+            },
+            "time": "2024-05-27T16:25:40+00:00"
         },
         {
             "name": "nesbot/carbon",

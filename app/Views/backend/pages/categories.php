@@ -95,12 +95,16 @@
 `
 <?php include('modals/category-modal-form.php'); ?>
 <?php include('modals/edit-category-modal-form.php'); ?>
+<?php include('modals/subcategory-modal-form.php'); ?>
 
 <?= $this->endSection(); ?>
 
 <?= $this->section('stylecheets') ?>
 <link rel="stylesheet" href="/backend/src/plugins/datatables/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="/backend/src/plugins/datatables/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="/extra-assets/jquery-ui-1.13.3/jquery-ui.min.css">
+<link rel="stylesheet" href="/extra-assets/jquery-ui-1.13.3/jquery-ui.structure.min.css">
+<link rel="stylesheet" href="/extra-assets/jquery-ui-1.13.3/jquery-ui.theme.min.css">
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts'); ?>
@@ -108,6 +112,7 @@
 <script src="/backend/src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
 <script src="/backend/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
 <script src="/backend/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
+<script src="/extra-assets/jquery-ui-1.13.3/jquery-ui.min.js"></script>
 <script>
   $(document).ready(function() {
     // Definisikan categories_DT di scope yang dapat diakses oleh semua fungsi
@@ -120,6 +125,10 @@
       ajax: "<?= route_to('get-categories') ?>",
       dom: "Brtip",
       info: true,
+      fnCreatedRow: function(row, data, index) {
+        $('td', row).eq(0).html(index + 1);
+        $('td', row).parent().attr('data-index', data[0]).attr('data-ordering', data[4]);
+      },
       columnDefs: [{
           orderable: false,
           targets: [0, 1, 2, 3]
@@ -132,12 +141,6 @@
       order: [
         [4, 'asc']
       ],
-      drawCallback: function(settings) {
-        // Update nomor urut setiap kali tabel di-redraw
-        this.api().column(0).nodes().each(function(cell, i) {
-          cell.innerHTML = i + 1;
-        });
-      }
     });
 
     // Event listener untuk tombol add category
@@ -233,93 +236,126 @@
       });
     }
 
-    $(document).on('click','.deleteCategoryBtn',function(e){
+    $(document).on('click', '.deleteCategoryBtn', function(e) {
       e.preventDefault();
       var category_id = $(this).data('id');
       var url = "<?= route_to('delete-category') ?>";
       // alert(category_id);
       swal.fire({
-        title:'Are you sure?',
-        html:'You want to delete this category',
-        showCloseButton:true,
-        showCancelButton:true,
-        cancelButtonText:'Cancel',
-        confirmButtonText:'Yes, Delete',
-        cancelButtonColor:'#d33',
+        title: 'Are you sure?',
+        html: 'You want to delete this category',
+        showCloseButton: true,
+        showCancelButton: true,
+        cancelButtonText: 'Cancel',
+        confirmButtonText: 'Yes, Delete',
+        cancelButtonColor: '#d33',
         confirmButtonColor: '#3085d6',
-        width:300,
-        allowOutsideClick:false
-      }).then(function(result){
-        if(result.value){
+        width: 300,
+        allowOutsideClick: false
+      }).then(function(result) {
+        if (result.value) {
           // alert('Delete now');
-          $.get(url,{category_id:category_id}, function(response){
-            if(response.status == 1){
+          $.get(url, {
+            category_id: category_id
+          }, function(response) {
+            if (response.status == 1) {
               categories_DT.ajax.reload(null, false);
               showCustomAlert(response.msg, 'success');
-            }else{
+            } else {
               showCustomAlert(response.msg, 'error');
             }
-          },'json');
+          }, 'json');
         }
       });
     });
+
+    $('table#categories-table').find('tbody').sortable({
+      update: function(event, ui) {
+        $(this).children().each(function(index) {
+          if ($(this).attr('data-ordering') != (index + 1)) {
+            $(this).attr('data-ordering', (index + 1)).addClass('updated');
+          }
+        });
+        var positions = [];
+
+        $('.updated').each(function() {
+          positions.push([$(this).attr('data-index'), $(this).attr('data-ordering')]);
+          $(this).removeClass('updated');
+        });
+
+        var url = "<?= route_to('reorder-categories') ?>";
+        $.get(url, {
+          positions: positions
+        }, function(response) {
+          if (response.status == 1) {
+            categories_DT.ajax.reload(null, false);
+            showCustomAlert(response.msg, 'success');
+          }
+        }, 'json');
+      }
+    });
+
+    $(document).on('click', '#add_subcategory_btn', function(e) {
+      e.preventDefault();
+      var modal_title = 'Add Sub Category';
+      var modal_btn_text = 'ADD';
+      var modal = $('body').find('div#sub-category-modal');
+      var select = modal.find('select[name="parent_cat"]');
+      var url = "<?= route_to('get-parent-categories') ?>";
+      $.getJSON(url, {
+        parent_category_id: null
+      }, function(response) {
+        select.find('option').remove();
+        select.html(response.data);
+      });
+      modal.find('.modal-title').html(modal_title);
+      modal.find('.modal-footer > button.action').html(modal_btn_text);
+      modal.find('input[type="text"]').val('');
+      modal.find('textarea').html('');
+      modal.find('span.error-text').html('');
+      modal.modal('show');
+    });
+
+    $(document).on('submit', '#add_subcategory_form', function(e) {
+      e.preventDefault();
+      //CSRF
+      var csrfName = $('.ci_csrf_data').attr('name'); //CSRF token name
+      var csrfHash = $('.ci_csrf_data').val(); //CSRF hash
+      var form = this;
+      var modal = $('body').find('div#sub-category-modal');
+      var formdata = new FormData(form);
+      formdata.append(csrfName, csrfHash);
+
+      $.ajax({
+        url: $(form).attr('action'),
+        method: $(form).attr('method'),
+        data: formdata,
+        processData: false,
+        dataType: 'json',
+        contentType: false,
+        cache: false,
+        beforeSend: function() {
+          $(form).find('span.error-text').text('');
+        },
+        success:function(response){
+          //Update CSRF hash
+          $('.ci_csrf_data').val(response.token);
+
+          if($.isEmptyObject(response.error)){
+            if (response.status == 1){
+              $(form)[0].reset();
+              modal.modal('hide');
+              showCustomAlert(response.msg, 'success');
+            }
+          }else{
+            $.each(response.error, function(prefix, val){
+              $(form).find('span.'+prefix+'_error').text(val);
+            });
+          }
+        }
+      });
+    });
+
   });
 </script>
 <?= $this->endSection(); ?>
-
-<!-- <script>
-  $(document).on('click', '#add_category_btn', function(e) {
-    e.preventDefault();
-    var modal = $('body').find('div#category-modal');
-    var modal_title = 'Add category';
-    var modal_btn_text = 'ADD';
-    modal.find('.modal-title').html(modal_title);
-    modal.find('.modal-footer > button.action').html(modal_btn_text);
-    modal.find('input.error-text').html('');
-    modal.find('input[type="text"]').val('');
-    modal.modal('show');
-  });
-
-  $('#add_category_form').on('submit', function(e) {
-    e.preventDefault();
-    //CSRF Hash
-    var csrfName = $('.ci_csrf_data').attr('name'); // CSRF token name
-    var csrfHash = $('.ci_csrf_data').val(); // CSRF Hash
-    var form = this;
-    var modal = $('body').find('div#category-modal');
-    var formdata = new FormData(form);
-    formdata.append(csrfName, csrfHash);
-
-    $.ajax({
-      url: $(form).attr('action'),
-      method: $(form).attr('method'),
-      data: formdata,
-      processData: false,
-      dataType: 'json',
-      contentType: false,
-      cache: false,
-      beforeSend: function() {
-        toastr.remove();
-        $(form).find('span.error-text').text('');
-      },
-      success: function(response) {
-        //Update CSRF Hash
-        $('.ci_csrf_data').val(response.token);
-
-        if ($.isEmptyObject(response.error)) {
-          if (response.status == 1) {
-            $(form)[0].reset();
-            modal.modal('hide');
-            toastr.success(response.msg);
-          } else {
-            toastr.error(response.msg);
-          }
-        } else {
-          $.each(response.error, function(prefix, val) {
-            $(form).find('span.' + prefix + '_error').text(val);
-          });
-        }
-      }
-    });
-  });
-</script> -->
