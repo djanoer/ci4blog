@@ -23,6 +23,8 @@ $routes->group('admin', static function ($routes) {
     $routes->get('reorder-categories', 'AdminController::reorderCategories',['as'=>'reorder-categories']);
     $routes->get('get-parent-categories', 'AdminController::getParentCategories',['as'=>'get-parent-categories']);
     $routes->post('add-subcategory', 'AdminController::addSubCategory',['as'=>'add-subcategory']);
+    $routes->get('get-subcategories', 'AdminController::getSubCategories',['as'=>'get-subcategories']);
+
   });
 
   $routes->group('', ['filter' => 'cifilter:guest'], static function ($routes) {

@@ -12,8 +12,8 @@
       <div class="modal-body">
         <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" class="ci_csrf_data">
         <div class="form-group">
-            <label for=""><b>Parent category</b></label>
-            <select name="parent_cat" id="" class="form-control">
+            <label for="parent_cat"><b>Parent category</b></label>
+            <select name="parent_cat" id="parent_cat" class="form-control">
                 <option value="">Uncategorized</option>
             </select>
         </div>
@@ -23,8 +23,8 @@
           <span class="text-danger error-text subcategory_name_error"></span>
         </div>
         <div class="form-group">
-            <label for=""><b>Description</b></label>
-            <textarea name="description" class="form-control" cols="30" rows="10" placeholder="Type..."></textarea>
+            <label for="description"><b>Description</b></label>
+            <textarea name="description" id="description" class="form-control" cols="30" rows="10" placeholder="Type..."></textarea>
         </div>
       </div>
       <div class="modal-footer">

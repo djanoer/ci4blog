@@ -68,7 +68,7 @@
         </div>
       </div>
       <div class="card-body">
-        <table class="table table-sm table-borderless table-hover table-striped">
+        <table class="table table-sm table-borderless table-hover table-striped" id="sub-categories-table">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -76,17 +76,10 @@
               <th scope="col">Parent category</th>
               <th scope="col">N. of post(s)</th>
               <th scope="col">Action</th>
+              <th scope="col">Ordering</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td scope="row">1</td>
-              <td>---</td>
-              <td>---</td>
-              <td>---</td>
-              <td>---</td>
-            </tr>
-          </tbody>
+          <tbody></tbody>
         </table>
       </div>
     </div>
@@ -216,7 +209,8 @@
               modal.modal('hide');
               showCustomAlert(response.msg, 'success');
               if (categories_DT) {
-                categories_DT.ajax.reload(null, false);
+                categories_DT.ajax.reload(null, false); //update datatable
+                subcategoriesDT.ajax.reload(null, false);
               } else {
                 console.error("categories_DT is not defined");
               }
@@ -260,6 +254,7 @@
           }, function(response) {
             if (response.status == 1) {
               categories_DT.ajax.reload(null, false);
+              subcategoriesDT.ajax.reload(null, false);
               showCustomAlert(response.msg, 'success');
             } else {
               showCustomAlert(response.msg, 'error');
@@ -289,6 +284,7 @@
         }, function(response) {
           if (response.status == 1) {
             categories_DT.ajax.reload(null, false);
+            subcategoriesDT.ajax.reload(null, false);
             showCustomAlert(response.msg, 'success');
           }
         }, 'json');
@@ -346,6 +342,7 @@
               $(form)[0].reset();
               modal.modal('hide');
               showCustomAlert(response.msg, 'success');
+              subcategoriesDT.ajax.reload(null, false);
             }
           }else{
             $.each(response.error, function(prefix, val){
@@ -354,6 +351,24 @@
           }
         }
       });
+    });
+
+    //Petrieve sub categories
+    var subcategoriesDT = $('#sub-categories-table').DataTable({
+      processing:true,
+      serverSide:true,
+      ajax: "<?= route_to('get-subcategories') ?>",
+      dom: "Brtip",
+      info: true,
+      fnCreatedRow: function(row, data, index) {
+        $('td', row).eq(0).html(index + 1);
+        $('td', row).parent().attr('data-index', data[0]).attr('data-ordering', data[5]);
+      },
+      columnDefs:[
+        { orderable:false, targets:[0,1,2,3,4] },
+        { visible:false, targets:5 },
+      ],
+      order:[[5,'asc']]
     });
 
   });
