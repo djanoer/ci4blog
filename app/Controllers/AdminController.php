@@ -12,7 +12,7 @@ use PhpParser\Node\Stmt\Catch_;
 
 class AdminController extends BaseController
 {
-    protected $helper = ['url', 'form', 'CIMail', 'CIFunctions'];
+    protected $helpers = ['url', 'form', 'CIMail', 'CIFunctions'];
     protected $db;
 
     public function __construct()
@@ -40,7 +40,7 @@ class AdminController extends BaseController
         $data = array(
             'pageTitle' => 'Profile',
         );
-        return view('backend/pages/profile');
+        return view('backend/pages/profile', $data);
     }
 
     public function categories()
@@ -355,5 +355,15 @@ class AdminController extends BaseController
         return json_encode(
             SSP::simple($_GET,$dbDetails, $table, $primaryKey, $columns)
         );
+    }
+
+    //fungsi new post
+    public function addPost() {
+        $subcategory = new SubCategory();
+        $data = [
+            'pageTitle'=>'Add new post',
+            'categories'=>$subcategory->asObject()->findAll()
+        ];
+        return view('backend/pages/new-post', $data);
     }
 }

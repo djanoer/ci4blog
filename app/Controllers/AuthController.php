@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class AuthController extends BaseController
 {
-    protected $helper = ['url', 'form', 'CIMail', 'CIFunctions'];
+    protected $helpers = ['url', 'form', 'CIMail', 'CIFunctions'];
 
     public function loginForm()
     {

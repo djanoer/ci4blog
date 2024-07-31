@@ -45,6 +45,8 @@
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
 		<link rel="stylesheet" type="text/css" href="/backend/vendors/styles/style.css" />
 		<link rel="stylesheet" href="/backend/custom/custom-alert.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <?= $this->renderSection('stylesheets') ?>
 	<style>
 		.swal2-popup{
@@ -81,6 +83,7 @@
 		<script src="/backend/vendors/scripts/layout-settings.js"></script>
 		<script src="/backend/custom/custom-alert.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <?php $this->renderSection('scripts'); ?>
 	</body>
 </html>

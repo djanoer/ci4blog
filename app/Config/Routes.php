@@ -14,6 +14,7 @@ $routes->group('admin', static function ($routes) {
     $routes->get('home', 'AdminController::index', ['as' => 'admin.home']);
     $routes->get('logout', 'AdminController::logoutHandler', ['as' => 'admin.logout']);
     $routes->get('profile', 'AdminController::profile', ['as' => 'admin.profile']);
+    $routes->post('update-personal-details', 'AdminController::updatePersonalDetails', ['as' => 'update-personal-details']);
     $routes->get('categories', 'AdminController::categories', ['as' => 'categories']);
     $routes->post('add-category', 'AdminController::addCategory', ['as' => 'add-category']);
     $routes->get('get-categories','AdminController::getCategories',['as'=>'get-categories']);
@@ -25,6 +26,9 @@ $routes->group('admin', static function ($routes) {
     $routes->post('add-subcategory', 'AdminController::addSubCategory',['as'=>'add-subcategory']);
     $routes->get('get-subcategories', 'AdminController::getSubCategories',['as'=>'get-subcategories']);
 
+    $routes->group('posts', static function($routes){
+      $routes->get('new-post','AdminController::addPost',['as'=>'new-post']);
+    });
   });
 
   $routes->group('', ['filter' => 'cifilter:guest'], static function ($routes) {

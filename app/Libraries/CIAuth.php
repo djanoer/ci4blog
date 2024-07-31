@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Libraries;
-
 use App\Models\User;
 
 class CIAuth
