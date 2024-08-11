@@ -52,27 +52,27 @@
             <!-- Timeline Tab start -->
             <div class="tab-pane fade show active" id="personal_details" role="tabpanel">
               <div class="pd-20">
-                <form action="<?= route_to('update-personal-details') ?>">
+                <form action="<?= route_to('update-personal-details') ?>" method="POST" id="personal_datails_form">
                   <?= csrf_field(); ?>
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="">Nama</label>
-                        <input type="text" name="name" class="form-control" placeholder="Enter full name">
+                        <input type="text" name="name" class="form-control" placeholder="Enter full name" value="<?= get_user()->name ?>">
                         <span class="text-danger error-text name_error"></span>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="">Username</label>
-                        <input type="text" name="username" class="form-control" placeholder="Enter username">
+                        <input type="text" name="username" class="form-control" placeholder="Enter username" value="<?= get_user()->username ?>">
                         <span class="text-danger error-text username_error"></span>
                       </div>
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="">Bio</label>
-                    <textarea name="bio" id="" cols="30" rows="10" class="form-control" placeholder="Bio....."></textarea>
+                    <textarea name="bio" id="" cols="30" rows="10" class="form-control" placeholder="Bio....." value="<?= get_user()->bio ?>"></textarea>
                     <span class="text-danger error-text bio_error"></span>
                   </div>
                   <div class="form-group">
@@ -98,3 +98,41 @@
 </div>
 
 <?= $this->endSection(); ?>
+<?= $this->section('scripts') ?>
+<script>
+  $('#personal_datails_form').on('submit', function(e){
+    e.preventDefault();
+    var form = this;
+    var formdata = new FormData(form);
+
+    $.ajax({
+      url:$(form).attr('action'),
+      method:$(form).attr('method'),
+      data:formdata,
+      processData:false,
+      dataType:'json',
+      contentType:false,
+      beforeSend:function(){
+        toastr.remove();
+        $(form).find('span.error-text').text('';)
+      },
+      success:function(response){
+        if( $.isEmptyObject(response.error) ){
+          if( response.status == 1 ){
+            $('.ci-user-name').each(function(){
+              $(this).html(response.user_info.name);
+            });
+            toastr.success(response.msg);
+          }else{
+            toastr.error(response.msg);
+          }
+        }else{
+          $.each(response.error, function(prefix, val){
+            $(form).find('span.'+prefix+'_error').text(val);
+          });
+        }
+      }
+    });
+  });
+</script>
+<?= $this->endSection() ?>

@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Libraries\CIAuth;
+use App\Models\User;
 use App\Models\Category;
 use SSP;
 use Mberecall\CodeIgniter\Library\Slugify;
@@ -41,6 +42,38 @@ class AdminController extends BaseController
             'pageTitle' => 'Profile',
         );
         return view('backend/pages/profile', $data);
+    }
+
+    public function updatePersonalDetails(){
+        $request = \Config\Services::request();
+        $validation = \Config\Services::validation();
+        $user_id = CIAuth::id();
+
+        if( $request->isAJAX() ){
+            $this->validate([
+                'name'=>[
+                    'rules'=>'required',
+                    'errors'=>[
+                        'required'=>'Full name is required'
+                    ]
+                ],
+                'username'=>[
+                    'rules'=>'required|min_length[4]|is_unique[users.username,id'.$user_id.']',
+                    'errors'=>[
+                        'required'=>'Username is required',
+                        'min_length'=>'Username must have minimum of 4 characters',
+                        'is_unique'=>'Username is already taken!'
+                    ]
+                ]
+                    ]);
+
+                    if( $validation->run() == FALSE){
+                        $errors = $validation->getErrors();
+                        return json_encode(['status'=>0,'error'=>$error]);
+                    }else{
+                        
+                    }
+        }
     }
 
     public function categories()
