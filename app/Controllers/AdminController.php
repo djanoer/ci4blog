@@ -58,21 +58,33 @@ class AdminController extends BaseController
                     ]
                 ],
                 'username'=>[
-                    'rules'=>'required|min_length[4]|is_unique[users.username,id'.$user_id.']',
+                    'rules'=>'required|min_length[4]|is_unique[users.username,id,'.$user_id.']',
                     'errors'=>[
                         'required'=>'Username is required',
                         'min_length'=>'Username must have minimum of 4 characters',
                         'is_unique'=>'Username is already taken!'
                     ]
                 ]
-                    ]);
+            ]);
 
-                    if( $validation->run() == FALSE){
-                        $errors = $validation->getErrors();
-                        return json_encode(['status'=>0,'error'=>$error]);
-                    }else{
-                        
-                    }
+            if( $validation->run() == FALSE){
+                $errors = $validation->getErrors();
+                return json_encode(['status' => 0, 'error' => $errors]);
+            }else{
+                $user = new User();
+                $update = $user->where('id',$user_id)->set([
+                    'name'=>$request->getVar('name'),
+                    'username'=>$request->getVar('username'),
+                    'bio'=>$request->getVar('bio'),
+                ])->update();
+
+                if($update){
+                    $user_info = $user->find($user_id);
+                    return json_encode(['status'=>1, 'user_info'=>$user_info,'msg'=>'Your personal details have been successfully updated.']);
+                }else{
+                    return json_encode(['status'=>0,'msg'=>'Somethings went wrong.']);
+                }
+            }
         }
     }
 

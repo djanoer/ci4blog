@@ -72,7 +72,7 @@
                   </div>
                   <div class="form-group">
                     <label for="">Bio</label>
-                    <textarea name="bio" id="" cols="30" rows="10" class="form-control" placeholder="Bio....." value="<?= get_user()->bio ?>"></textarea>
+                    <textarea name="bio" id="" cols="30" rows="10" class="form-control" placeholder="Bio....."><?= get_user()->bio ?></textarea>
                     <span class="text-danger error-text bio_error"></span>
                   </div>
                   <div class="form-group">
@@ -114,7 +114,7 @@
       contentType:false,
       beforeSend:function(){
         toastr.remove();
-        $(form).find('span.error-text').text('';)
+        $(form).find('span.error-text').text('');
       },
       success:function(response){
         if( $.isEmptyObject(response.error) ){
@@ -135,4 +135,50 @@
     });
   });
 </script>
+
+
+<!-- <script>
+  $('#personal_datails_form').on('submit', function(e){
+    e.preventDefault();
+    var form = this;
+    var formdata = new FormData(form);
+
+    $.ajax({
+      url: $(form).attr('action'),
+      method: $(form).attr('method'),
+      data: formdata,
+      processData: false,
+      dataType: 'json',
+      contentType: false,
+      beforeSend: function(){
+        toastr.remove();
+        $(form).find('span.error-text').text('');
+        $('#loading').show(); // Show loading indicator
+      },
+      success: function(response){
+        $('#loading').hide(); // Hide loading indicator
+        if($.isEmptyObject(response.error)){
+          if(response.status == 1){
+            $('.ci-user-name').each(function(){
+              $(this).html(response.user_info.name);
+            });
+            toastr.success(response.msg);
+          } else {
+            toastr.error(response.msg);
+          }
+        } else {
+          $.each(response.error, function(prefix, val){
+            $(form).find('span.' + prefix + '_error').text(val);
+          });
+        }
+      },
+      error: function(xhr, status, error){
+        $('#loading').hide(); // Hide loading indicator
+        toastr.error('An error occurred: ' + error);
+      }
+    });
+  });
+</script> -->
+
+
 <?= $this->endSection() ?>
