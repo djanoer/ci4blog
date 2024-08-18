@@ -25,7 +25,8 @@
   <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 mb-30">
     <div class="pd-20 card-box height-100-p">
       <div class="profile-photo">
-        <a href="modal" class="edit-avatar"><i class="fa fa-pencil"></i></a>
+        <a href="javascript:;" onclick="event.preventDefault();document.getElementById('user_profile_file').click();" class="edit-avatar"><i class="fa fa-pencil"></i></a>
+        <input type="file" name="user_profile_file" id="user_profile_file" class="d-none" style="opacity: 0;">
         <img src="<?= get_user()->picture == null ? '/images/users/default-avatar.jpg' : '/images/users/'.get_user()->picture ?>" alt="" class="avatar-photo ci-avatar-photo">
 
       </div>
@@ -85,7 +86,35 @@
             <!-- Tasks Tab start -->
             <div class="tab-pane fade" id="change_password" role="tabpanel">
               <div class="pd-20 profile-task-wrap">
-                ----- Change password ------
+                <form action="" method="POST" id="change_password_form">
+                  <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" class="ci_csrf_data">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="">Current password</label>
+                        <input type="password" class="form-control" placeholder="Enter current password" name="current_password">
+                        <span class="text-danger error-text current_password_error"></span>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="">New password</label>
+                        <input type="password" class="form-control" placeholder="Enter new password" name="new_password">
+                        <span class="text-danger error-text new_password_error"></span>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="">Confirm new password</label>
+                        <input type="password" class="form-control" placeholder="Retype new password" name="confirm_new_password">
+                        <span class="text-danger error-text confirm_new_password_error"></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Change password</button>
+                  </div>
+                </form>
               </div>
             </div>
             <!-- Tasks Tab End -->
@@ -134,51 +163,24 @@
       }
     });
   });
-</script>
 
-
-<!-- <script>
-  $('#personal_datails_form').on('submit', function(e){
-    e.preventDefault();
-    var form = this;
-    var formdata = new FormData(form);
-
-    $.ajax({
-      url: $(form).attr('action'),
-      method: $(form).attr('method'),
-      data: formdata,
-      processData: false,
-      dataType: 'json',
-      contentType: false,
-      beforeSend: function(){
-        toastr.remove();
-        $(form).find('span.error-text').text('');
-        $('#loading').show(); // Show loading indicator
-      },
-      success: function(response){
-        $('#loading').hide(); // Hide loading indicator
-        if($.isEmptyObject(response.error)){
-          if(response.status == 1){
-            $('.ci-user-name').each(function(){
-              $(this).html(response.user_info.name);
-            });
-            toastr.success(response.msg);
-          } else {
-            toastr.error(response.msg);
+  $('#user_profile_file').ijaboCropTool({
+          preview : '.ci-avatar-photo',
+          setRatio:1,
+          allowedExtensions: ['jpg', 'jpeg','png'],
+          processUrl:'<?= route_to('update-personal-picture') ?>',
+          withCSRF:['<?= csrf_token() ?>','<?= csrf_hash() ?>'],
+          onSuccess:function(message, element, status){
+            if(status == 1) {
+              toastr.success(message);
+            }else{
+              toastr.error(message);
+            }
+          },
+          onError:function(message, element, status){
+            alert(message);
           }
-        } else {
-          $.each(response.error, function(prefix, val){
-            $(form).find('span.' + prefix + '_error').text(val);
-          });
-        }
-      },
-      error: function(xhr, status, error){
-        $('#loading').hide(); // Hide loading indicator
-        toastr.error('An error occurred: ' + error);
-      }
-    });
-  });
-</script> -->
+      });   
 
-
+</script>
 <?= $this->endSection() ?>
