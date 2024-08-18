@@ -86,7 +86,7 @@
             <!-- Tasks Tab start -->
             <div class="tab-pane fade" id="change_password" role="tabpanel">
               <div class="pd-20 profile-task-wrap">
-                <form action="" method="POST" id="change_password_form">
+                <form action="<?= route_to('change-password') ?>" method="POST" id="change_password_form">
                   <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>" class="ci_csrf_data">
                   <div class="row">
                     <div class="col-md-4">
@@ -181,6 +181,12 @@
             alert(message);
           }
       });   
+
+      //Change password
+      $('#change_password_form').on('submit', function(e){
+        e.preventDefault();
+        alert('Submit...');
+      });
 
 </script>
 <?= $this->endSection() ?>

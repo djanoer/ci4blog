@@ -16,6 +16,7 @@ $routes->group('admin', static function ($routes) {
     $routes->get('profile', 'AdminController::profile', ['as' => 'admin.profile']);
     $routes->post('update-personal-details', 'AdminController::updatePersonalDetails', ['as' => 'update-personal-details']);
     $routes->post('update-personal-picture', 'AdminController::updatePersonalPicture', ['as' => 'update-personal-picture']);
+    $routes->post('change-password', 'AdminController::changePassword', ['as' => 'change-password']);
     $routes->get('categories', 'AdminController::categories', ['as' => 'categories']);
     $routes->post('add-category', 'AdminController::addCategory', ['as' => 'add-category']);
     $routes->get('get-categories','AdminController::getCategories',['as'=>'get-categories']);
